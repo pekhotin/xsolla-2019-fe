@@ -15,7 +15,7 @@
       <v-btn
               flat
               target="_blank"
-              @click="dialogPaymentMethods = true"
+              @click="openDialog"
       >
         <span class="mr-2">Рейтинг платежных систем</span>
       </v-btn>
@@ -115,12 +115,14 @@
               </v-list-tile>
             </v-list>
 
+            <apexchart width="500" type="bar" :options="options" :series="series"></apexchart>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" flat @click="dialogProjects = false">Закрыть</v-btn>
           </v-card-actions>
         </v-card>
+
       </v-dialog>
 
 
@@ -147,13 +149,26 @@
         { text: 'Пользователь', align: 'center', value: 'user.name' },
         { text: 'Статус', align: 'center', value: 'transaction.status' }
       ],
+      options: {
+        chart: {
+          id: 'vuechart-example'
+        },
+        xaxis: {
+          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+        }
+      },
+      series: [{
+        name: 'Количество использований',
+        data: [30, 40, 45, 50, 49, 60, 70, 91]
+      }]
     }),
     created() {
       this.init()
     },
     methods: {
       init () {
-
+        this.options.xaxis = this.getPaymentMethods().map(el => el.name)
+        this.series.data = this.getPaymentMethods().map(el => el.count)
       },
       getStatus (status) {
         switch (status) {
@@ -185,6 +200,12 @@
 
         return paymentMethods.sort((a, b) => a.count < b.count ? 1 : -1)
 
+      },
+      openDialog() {
+        this.dialogPaymentMethods = true
+
+        this.options.xaxis = this.getPaymentMethods().map(el => el.name)
+        this.series.data = this.getPaymentMethods().map(el => el.count)
       }
     }
   }
