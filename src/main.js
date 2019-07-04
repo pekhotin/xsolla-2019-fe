@@ -4,10 +4,6 @@ import App from './App.vue'
 
 Vue.config.productionTip = false
 
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
-
 Vue.filter('formatDate', function(value) {
   if (value) {
     let date = new Date(value)
@@ -27,3 +23,7 @@ Vue.filter('formatDate', function(value) {
     return d + '.' + m + '.' + y + ' ' + h + ':' + i + ':' + s;
   }
 })
+
+new Vue({
+  render: h => h(App),
+}).$mount('#app')
