@@ -32,7 +32,7 @@
             <td>{{ props.item.transaction.id }}</td>
             <td>{{ props.item.transaction.project.name }}</td>
             <td>{{ props.item.transaction.payment_method.name }}</td>
-            <td>{{ props.item.transaction.transfer_date }}</td>
+            <td>{{ props.item.transaction.transfer_date | formatDate}}</td>
             <td>{{ props.item.user.name }}</td>
             <td>{{ props.item.transaction.status }}</td>
           </template>
