@@ -191,7 +191,7 @@
             paymentMethods.push({
               id: transaction.transaction.payment_method.id,
               name: transaction.transaction.payment_method.name,
-              count: 0
+              count: 1
             })
           } else {
             p.count++
