@@ -88,7 +88,7 @@
         </v-card>
       </v-dialog>
 
-      <v-dialog v-model="dialogPaymentMethods" max-width="600px">
+      <v-dialog v-model="dialogPaymentMethods" max-width="800px">
         <v-card>
           <v-card-title>
             <span class="headline">Платежные системы</span>
@@ -97,7 +97,7 @@
 
             <v-list>
               <v-list-tile
-                      v-for="(item, index) in getPaymentMethods()"
+                      v-for="(item, index) in getMethods()"
                       :key="index"
               >
                 <v-list-tile-action>
@@ -114,25 +114,21 @@
 
               </v-list-tile>
             </v-list>
-
-            <apexchart width="500" type="bar" :options="options" :series="series"></apexchart>
+            <apexchart type="bar" :options="options" :series="series"></apexchart>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" flat @click="dialogPaymentMethods = false">Закрыть</v-btn>
           </v-card-actions>
         </v-card>
-
       </v-dialog>
-
-
     </v-layout>
   </v-container>
 </template>
 
 <script>
   export default {
-    data: () => ({
+    data: (vm) => ({
       dialogProjects: false,
       dialogPaymentMethods: false,
       search: '',
@@ -153,38 +149,26 @@
         chart: {
           id: 'vuechart-example'
         },
-        xaxis: { // Хотя бы так пока...
-          categories: require('../assets/data.json').map(el => el.transaction.payment_method).reduce((acc, el) => {
-              let temp = acc.find(elem => elem.id === el.id);
-              if (temp) {
-                  temp.count ++;
-              } else {
-                  acc.push({id: el.id, name: el.name, count: 1});
-              }
-              return acc;
-          }, []).sort((a, b) => {return (a.count < b.count ? 1 : -1)}).map(el => el.name)
+        xaxis: {
+          categories: vm.getMethods().map(el => el.name)
         }
       },
       series: [{
         name: 'Количество использований',
-        data: require('../assets/data.json').map(el => el.transaction.payment_method).reduce((acc, el) => {
-            let temp = acc.find(elem => elem.id === el.id);
-            if (temp) {
-                temp.count ++;
-            } else {
-                acc.push({id: el.id, name: el.name, count: 1});
-            }
-            return acc;
-        }, []).sort((a, b) => {return (a.count < b.count ? 1 : -1)}).map(el => el.count)
+        data: vm.getMethods().map(el => el.count)
       }]
     }),
-    created() {
-      this.init()
-    },
     methods: {
-      init () {
-        // this.options.xaxis = this.getPaymentMethods().map(el => el.name)
-        // this.series.data = this.getPaymentMethods().map(el => el.count)
+      getMethods () {
+        return require('../assets/data.json').map(el => el.transaction.payment_method).reduce((acc, el) => {
+          let temp = acc.find(elem => elem.id === el.id)
+          if (temp) {
+            temp.count++
+          } else {
+            acc.push({id: el.id, name: el.name, count: 1})
+          }
+          return acc
+        }, []).sort((a, b) => {return (a.count < b.count ? 1 : -1)})
       },
       getStatus (status) {
         switch (status) {
@@ -198,30 +182,8 @@
           return self.findIndex(el => el.id == value.id) === index
         })
       },
-      getPaymentMethods () {
-        let paymentMethods = []
-
-        this.transactions.forEach(transaction => {
-          let p = paymentMethods.find(method => method.id == transaction.transaction.payment_method.id);
-          if (!p) {
-            paymentMethods.push({
-              id: transaction.transaction.payment_method.id,
-              name: transaction.transaction.payment_method.name,
-              count: 1
-            })
-          } else {
-            p.count++
-          }
-        })
-
-        return paymentMethods.sort((a, b) => a.count < b.count ? 1 : -1)
-
-      },
       openDialog() {
         this.dialogPaymentMethods = true
-
-        this.options.xaxis = this.getPaymentMethods().map(el => el.name)
-        this.series.data = this.getPaymentMethods().map(el => el.count)
       }
     }
   }
