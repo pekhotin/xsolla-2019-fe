@@ -154,12 +154,28 @@
           id: 'vuechart-example'
         },
         xaxis: { // Хотя бы так пока...
-          categories: ['Credit/Debit Cards', 'PayPal', 'Your Balance', 'Google Pay', 'Webmoney', 'RAZER zGOLD', 'MobileGo', 'QIWI']
+          categories: require('../assets/data.json').map(el => el.transaction.payment_method).reduce((acc, el) => {
+              let temp = acc.find(elem => elem.id === el.id);
+              if (temp) {
+                  temp.count ++;
+              } else {
+                  acc.push({id: el.id, name: el.name, count: 1});
+              }
+              return acc;
+          }, []).sort((a, b) => {return (a.count < b.count ? 1 : -1)}).map(el => el.name)
         }
       },
       series: [{
         name: 'Количество использований',
-        data: [70, 14, 7, 1, 1, 0, 0, 0] // Хотя бы так пока...
+        data: require('../assets/data.json').map(el => el.transaction.payment_method).reduce((acc, el) => {
+            let temp = acc.find(elem => elem.id === el.id);
+            if (temp) {
+                temp.count ++;
+            } else {
+                acc.push({id: el.id, name: el.name, count: 1});
+            }
+            return acc;
+        }, []).sort((a, b) => {return (a.count < b.count ? 1 : -1)}).map(el => el.count)
       }]
     }),
     created() {
