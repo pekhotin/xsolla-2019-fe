@@ -153,13 +153,13 @@
         chart: {
           id: 'vuechart-example'
         },
-        xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+        xaxis: { // Хотя бы так пока...
+          categories: ['Credit/Debit Cards', 'PayPal', 'Your Balance', 'Google Pay', 'Webmoney', 'RAZER zGOLD', 'MobileGo', 'QIWI']
         }
       },
       series: [{
         name: 'Количество использований',
-        data: [30, 40, 45, 50, 49, 60, 70, 91]
+        data: [70, 14, 7, 1, 1, 0, 0, 0] // Хотя бы так пока...
       }]
     }),
     created() {
@@ -167,8 +167,8 @@
     },
     methods: {
       init () {
-        this.options.xaxis = this.getPaymentMethods().map(el => el.name)
-        this.series.data = this.getPaymentMethods().map(el => el.count)
+        // this.options.xaxis = this.getPaymentMethods().map(el => el.name)
+        // this.series.data = this.getPaymentMethods().map(el => el.count)
       },
       getStatus (status) {
         switch (status) {
